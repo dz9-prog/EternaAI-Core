@@ -1,20 +1,17 @@
-import OpenAI from "openai";
+// scripts/autoGPT.js
+const fs = require('fs');
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+module.exports = {
+  init: () => {
+    console.log('AutoGPT iniciado!');
 
-export async function runCEO() {
-  try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4.1-mini",
-      messages: [
-        { role: "system", content: "Você é o CEO da EternaAI, tomando decisões automáticas." },
-        { role: "user", content: "Verifique o status do projeto e sugira melhorias passivas." }
-      ]
-    });
-    console.log("🤖 CEO GPT:", response.choices[0].message.content);
-  } catch (err) {
-    console.log("❌ Erro CEO GPT:", err.message);
+    // Simula uma "tarefa automática"
+    setInterval(() => {
+      const timestamp = new Date().toISOString();
+      console.log(`[AutoGPT] Rodando tarefa automática em: ${timestamp}`);
+
+      // Salva um log local
+      fs.appendFileSync('autogpt.log', `[${timestamp}] AutoGPT rodou\n`);
+    }, 10000); // a cada 10 segundos
   }
-}
+};
