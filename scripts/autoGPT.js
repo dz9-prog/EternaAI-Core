@@ -1,17 +1,24 @@
-// scripts/autoGPT.js
-const fs = require('fs');
+import OpenAI from "openai";
+import dotenv from "dotenv";
+dotenv.config();
 
-module.exports = {
-  init: () => {
-    console.log('AutoGPT iniciado!');
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-    // Simula uma "tarefa automática"
-    setInterval(() => {
-      const timestamp = new Date().toISOString();
-      console.log(`[AutoGPT] Rodando tarefa automática em: ${timestamp}`);
+export async function runAutoGPT(task) {
+    try {
+        const response = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+                { role: "system", content: "Você é um assistente automatizado para executar tarefas." },
+                { role: "user", content: `Execute a seguinte tarefa: ${task}` }
+            ],
+            temperature: 0.7
+        });
 
-      // Salva um log local
-      fs.appendFileSync('autogpt.log', `[${timestamp}] AutoGPT rodou\n`);
-    }, 10000); // a cada 10 segundos
-  }
-};
+        const result = response.choices[0].message.content;
+        console.log(`[AutoGPT] Resultado da tarefa "${task}":\n${result}\n`);
+        return result;
+    } catch (err) {
+        console.error("[AutoGPT] Erro:", err.message);
+    }
+}
